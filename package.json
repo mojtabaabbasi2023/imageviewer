@@ -19,6 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "build:demo": "vite build -c vite.config.deploy.ts",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
