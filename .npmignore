@@ -1,0 +1,9 @@
+# فایل‌هایی که نباید در پکیج npm قرار بگیرند
+/playground
+/styles
+*.log
+node_modules
+*.tsbuildinfo
+vite.config.ts
+tsconfig*.json
+README.md

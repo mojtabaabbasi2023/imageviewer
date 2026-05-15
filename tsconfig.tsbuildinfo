@@ -1,0 +1,1 @@
+{"root":["./src/env.d.ts","./src/index.ts","./src/components/imageitem.vue","./src/components/imageitem.vue.d.ts","./src/components/imageviewer.vue","./src/components/imageviewer.vue.d.ts","./src/composables/usedragscroll.ts","./src/composables/usekeyboardscroll.ts","./src/composables/usezoom.ts","./src/composables/usezoompoint.ts","./src/types/scss.d.ts"],"version":"6.0.3"}
