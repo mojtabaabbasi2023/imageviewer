@@ -2,6 +2,8 @@
 
 An image viewer component for Vue 3, written in TypeScript, providing advanced features like point zoom, lazy loading, and smooth navigation.
 
+[**Live Demo**](https://mojtabaabbasi2023.github.io/imageviewer/)
+
 [![npm version](https://badge.fury.io/js/%40mojtabaabbasi%2Fimage-viewer.svg)](https://badge.fury.io/js/%40mojtabaabbasi%2Fimage-viewer)
 
 ## Features
