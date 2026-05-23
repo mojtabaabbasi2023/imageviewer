@@ -11,6 +11,7 @@ export default defineConfig({
   base: '/imageviewer/',
   // Set the root to the playground directory.
   root: resolve(__dirname, 'src/playground'),
+  publicDir: resolve(__dirname, 'src/playground/public'),
   build: {
     // Output the build files to a 'dist-demo' directory to avoid conflicts.
     outDir: resolve(__dirname, 'dist-demo'),
