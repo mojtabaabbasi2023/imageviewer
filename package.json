@@ -5,6 +5,7 @@
     "type": "git",
     "url": "https://github.com/mojtabaabbasi2023/imageviewer.git"
   },
+  "homepage": "https://mojtabaabbasi2023.github.io/imageviewer",
   "main": "dist/image-viewer.umd.js",
   "module": "dist/image-viewer.es.js",
   "types": "dist/index.d.ts",
