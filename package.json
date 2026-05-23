@@ -1,6 +1,10 @@
 {
   "name": "@mojtabaabbasi/image-viewer",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mojtabaabbasi2023/imageviewer.git"
+  },
   "main": "dist/image-viewer.umd.js",
   "module": "dist/image-viewer.es.js",
   "types": "dist/index.d.ts",
