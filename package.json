@@ -40,5 +40,16 @@
     "vite": "^8.0.10",
     "vite-plugin-dts": "^5.0.0",
     "vue-tsc": "^3.2.7"
-  }
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "image-viewer",
+    "image-gallery",
+    "point-zoom",
+    "photo-viewer",
+    "book-page-viewer",
+    "book-viewer",
+    "typescript"
+  ]
 }
