@@ -11,9 +11,9 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/image-viewer.es.js",
-      "require": "./dist/image-viewer.umd.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/image-viewer.umd.js"
     },
     "./image-viewer.css": "./dist/image-viewer.css"
   },
@@ -23,7 +23,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build && vue-tsc -p tsconfig.json",
     "build:demo": "vite build -c vite.config.deploy.ts",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
@@ -38,7 +38,6 @@
     "sass-embedded": "^1.99.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.10",
-    "vite-plugin-dts": "^5.0.0",
     "vue-tsc": "^3.2.7"
   },
   "keywords": [

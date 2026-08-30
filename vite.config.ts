@@ -1,7 +1,6 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-// import dts from 'vite-plugin-dts'
 
 export default defineConfig(({ command }) => {
   if (command === 'serve') {
@@ -26,16 +25,7 @@ export default defineConfig(({ command }) => {
   // command === 'build'
   return {
     // config for build
-    plugins: [
-      vue()
-      // dts({
-      //   entryRoot: 'src',
-      //   include: ['src'],
-      //   insertTypesEntry: true,
-      //   cleanVueFileName: true,
-      //   copyDtsFiles: false
-      // })
-    ],
+    plugins: [vue()],
     build: {
       lib: {
         entry: 'src/index.ts', // فایل اصلی پکیج
