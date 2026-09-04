@@ -45,8 +45,10 @@
 <script lang="ts">
 import { useDragScroll } from '../composables/useDragScroll';
 import { useKeyboardScroll } from '../composables/useKeyboardScroll';
+import { normalizeImageViewerState, useImageViewerState } from '../composables/useImageViewerState';
 import { useZoom } from '../composables/useZoom';
 import { useZoomPoint } from '../composables/useZoomPoint';
+import type { PartialImageViewerState } from '../types/imageViewerState';
 import ImageItem from './ImageItem.vue';
 import { nextTick, type Ref, ref } from 'vue';
 import { defineComponent } from 'vue'
@@ -60,12 +62,16 @@ export default defineComponent({
         dataItems: {
             type: Array as () => Array<{ path: string; width: number; height: number; }>,
             required: true
+        },
+        modelValue: {
+            type: Object as () => PartialImageViewerState,
+            default: () => ({})
         }
     },
+    emits: ['update:modelValue'],
     data(): {
         images: Array<{ path: string; width: number; height: number; loaded: boolean; calculateHeight: number }>,
         rotateAngle: number,
-        pageNumber: number,
         visibleImages: Array<any>,
         pageSize: number,
         observer: IntersectionObserver | null,
@@ -79,7 +85,6 @@ export default defineComponent({
         return {
             images: this.dataItems.map((src) => ({ ...src, loaded: false, calculateHeight: this.calculateHeight(src.width, src.height) })),
             rotateAngle: 0,
-            pageNumber: 1,
             visibleImages: [],
             pageSize: 1,
             observer: null,
@@ -91,14 +96,35 @@ export default defineComponent({
             resizeObserver: null
         };
     },
-    setup() {
+    setup(props, { emit, expose }) {
         const imagegallery: Ref<HTMLElement | null> = ref(null);
-        const { zoomLevel, zoomIn, zoomOut, resetZoom } = useZoom();
+        const initialState = normalizeImageViewerState(props.modelValue);
+        const pageNumber = ref(initialState.pageNumber);
+        const { zoomLevel, zoomIn, zoomOut, resetZoom } = useZoom(initialState.zoom);
         const { isDragging, startDrag, stopDrag, onMove } = useDragScroll(imagegallery);
         const isHover = ref(false);
         useKeyboardScroll({ containerRef: imagegallery, enabled: isHover });
         const { setScrollTopAfterZoom } = useZoomPoint({ containerRef: imagegallery });
+        const { emitViewerState, applyViewerState } = useImageViewerState({
+            containerRef: imagegallery,
+            getZoom: () => zoomLevel.value,
+            setZoom: (zoom) => {
+                zoomLevel.value = zoom;
+            },
+            getPageNumber: () => pageNumber.value,
+            setPageNumber: (value) => {
+                pageNumber.value = value;
+            },
+            getMaxPageNumber: () => props.dataItems.length,
+            emit
+        });
+
+        expose({
+            applyViewerState
+        });
+
         return {
+            pageNumber,
             zoomLevel,
             zoomIn,
             zoomOut,
@@ -109,6 +135,8 @@ export default defineComponent({
             onMove,
             imagegallery,
             setScrollTopAfterZoom,
+            emitViewerState,
+            applyViewerState,
             isHover
         };
     },
@@ -123,6 +151,8 @@ export default defineComponent({
                 this.setCalculateHeight();
                 this.imageThreeLoad(1);
                 this.initObserver();
+
+                this.applyViewerState(this.modelValue);
             },
             immediate: true
         }
@@ -166,6 +196,7 @@ export default defineComponent({
             await zoomAction();
             await nextTick();
             this.setCalculateHeight();
+            this.emitViewerState();
         },
         handleZoomAction(e: WheelEvent | undefined, action: () => void, centerViewport?: boolean): void {
             if (this.resizeObserver) {
@@ -209,6 +240,7 @@ export default defineComponent({
         },
         handleScroll(): void {
             this.isScrolling = true;
+            this.emitViewerState();
             clearTimeout(this.scrollTimeout);
             this.scrollTimeout = setTimeout(() => {
                 this.isScrolling = false;
@@ -238,6 +270,7 @@ export default defineComponent({
                 });
                 if (currentRatio >= 0.3) {
                     this.pageNumber = currentIndex + 1;
+                    // this.emitViewerState();
                 }
             }, options);
             this.$nextTick(() => {
@@ -270,6 +303,7 @@ export default defineComponent({
                     (this.imagegallery as HTMLElement).scrollTo({
                         top: targetEl.offsetTop,
                     });
+                    // this.$nextTick(() => this.emitViewerState());
                     // setTimeout(() => {
                     //     this.initObserver();
                     // }, 1000);

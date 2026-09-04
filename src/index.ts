@@ -8,4 +8,6 @@ export * from './composables/useZoomPoint'
 export * from './composables/useKeyboardScroll'
 export * from './composables/useDragScroll'
 export * from './composables/useZoom'
+export * from './composables/useImageViewerState'
+export * from './types/imageViewerState'
 

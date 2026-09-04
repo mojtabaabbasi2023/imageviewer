@@ -6,8 +6,8 @@ export interface UseZoom {
     resetZoom: () => void;
 }
 
-export function useZoom(): UseZoom {
-    const zoomLevel: Ref<number> = ref(100);
+export function useZoom(initialZoom = 100): UseZoom {
+    const zoomLevel: Ref<number> = ref(initialZoom);
 
     const zoomIn: () => void = () => {
         zoomLevel.value += 5;
