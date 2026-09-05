@@ -63,12 +63,12 @@ export default defineComponent({
             type: Array as () => Array<{ path: string; width: number; height: number; }>,
             required: true
         },
-        modelValue: {
+        state: {
             type: Object as () => PartialImageViewerState,
             default: () => ({})
         }
     },
-    emits: ['update:modelValue'],
+    emits: ['update:state'],
     data(): {
         images: Array<{ path: string; width: number; height: number; loaded: boolean; calculateHeight: number }>,
         rotateAngle: number,
@@ -98,7 +98,7 @@ export default defineComponent({
     },
     setup(props, { emit, expose }) {
         const imagegallery: Ref<HTMLElement | null> = ref(null);
-        const initialState = normalizeImageViewerState(props.modelValue);
+        const initialState = normalizeImageViewerState(props.state);
         const pageNumber = ref(initialState.pageNumber);
         const { zoomLevel, zoomIn, zoomOut, resetZoom } = useZoom(initialState.zoom);
         const { isDragging, startDrag, stopDrag, onMove } = useDragScroll(imagegallery);
@@ -152,7 +152,7 @@ export default defineComponent({
                 this.imageThreeLoad(1);
                 this.initObserver();
 
-                this.applyViewerState(this.modelValue);
+                this.applyViewerState(this.state);
             },
             immediate: true
         }

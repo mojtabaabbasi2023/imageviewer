@@ -11,8 +11,8 @@ export interface UseImageViewerStateOptions {
     setPageNumber: (pageNumber: number) => void;
     getMaxPageNumber: () => number;
 
-    // خروجی v-model واحد را برای مصرفکننده ارسال میکند.
-    emit: (event: 'update:modelValue', value: ImageViewerState) => void;
+    // خروجی v-model:state را برای مصرفکننده ارسال میکند.
+    emit: (event: 'update:state', value: ImageViewerState) => void;
 }
 
 function normalizeNumber(value: unknown, fallback: number): number {
@@ -61,7 +61,7 @@ export function useImageViewerState({
 
     // وضعیت فعلی زوم، اسکرول و شماره صفحه را به بیرون کامپوننت میفرستد.
     const emitViewerState = (): void => {
-        emit('update:modelValue', getCurrentViewerState());
+        emit('update:state', getCurrentViewerState());
     };
 
     // وضعیت ذخیرهشده مصرفکننده را دوباره روی viewer اعمال میکند.

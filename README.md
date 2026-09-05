@@ -13,6 +13,7 @@ An image viewer component for Vue 3, written in TypeScript, providing advanced f
 - **Drag to Scroll**: Pan across the image by dragging with the mouse.
 - **Go to Page**: Instantly jump to any image by entering its page number.
 - **Keyboard Scroll**: Navigate using the arrow keys.
+- **State Persistence**: Receive and emit viewer state with `v-model:state` to restore zoom, page, and scroll position.
 - **TypeScript Support**: Fully written in TypeScript.
 - **Customizable**: Add custom controls via slots.
 
@@ -50,6 +51,33 @@ const images = ref([
 | Prop Name   | Type                                                              | Required | Description                                   |
 |-------------|-------------------------------------------------------------------|----------|-----------------------------------------------|
 | `dataItems` | `Array<{ path: string; width: number; height: number; }>`         | `true`   | An array of image objects to display. The `width` and `height` properties are required to calculate the container height before the images are loaded, ensuring a smooth lazy loading experience. |
+| `state`     | `{ zoom?: number; scrollTop?: number; scrollLeft?: number; pageNumber?: number; }` | `false`  | External viewer state used to restore the current zoom, scroll position, and page number. Use with `v-model:state` to keep it synced. |
+
+## State Persistence
+
+Use `v-model:state` when you want to save the viewer status and restore it later. The emitted state includes the current `zoom`, `scrollTop`, `scrollLeft`, and `pageNumber`.
+
+```vue
+<script setup>
+import { ref } from 'vue';
+import { ImageViewer } from '@mojtabaabbasi/image-viewer';
+
+const images = ref([
+  { path: 'path/to/image1.jpg', width: 1920, height: 1080 },
+]);
+
+const viewerState = ref({
+  zoom: 100,
+  scrollTop: 0,
+  scrollLeft: 0,
+  pageNumber: 1,
+});
+</script>
+
+<template>
+  <ImageViewer v-model:state="viewerState" :data-items="images" />
+</template>
+```
 
 ## Slots
 
