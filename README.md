@@ -57,6 +57,8 @@ const images = ref([
 
 Use `v-model:state` when you want to save the viewer status and restore it later. The emitted state includes the current `zoom`, `scrollTop`, `scrollLeft`, and `pageNumber`.
 
+ State is applied after `dataItems props` updates. Because of this order, set `state` first and then update `dataItems`.
+
 ```vue
 <script setup>
 import { ref } from 'vue';
