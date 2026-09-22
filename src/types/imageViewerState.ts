@@ -3,6 +3,7 @@ export interface ImageViewerState {
     scrollTop: number;
     scrollLeft: number;
     pageNumber: number;
+    rotateAngle: number;
 }
 
 export type PartialImageViewerState = Partial<ImageViewerState>;
@@ -11,5 +12,6 @@ export const defaultImageViewerState: ImageViewerState = {
     zoom: 100,
     scrollTop: 0,
     scrollLeft: 0,
-    pageNumber: 1
+    pageNumber: 1,
+    rotateAngle: 0
 };

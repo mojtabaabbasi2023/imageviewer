@@ -10,6 +10,8 @@ export interface UseImageViewerStateOptions {
     getPageNumber: () => number;
     setPageNumber: (pageNumber: number) => void;
     getMaxPageNumber: () => number;
+    getRotateAngle: () => number;
+    setRotateAngle: (rotateAngle: number) => void;
 
     // خروجی v-model:state را برای مصرفکننده ارسال میکند.
     emit: (event: 'update:state', value: ImageViewerState) => void;
@@ -21,6 +23,11 @@ function normalizeNumber(value: unknown, fallback: number): number {
 
 function clamp(value: number, min: number, max: number): number {
     return Math.min(Math.max(value, min), max);
+}
+
+function normalizeRotateAngle(value: unknown): number {
+    const angle = normalizeNumber(value, defaultImageViewerState.rotateAngle);
+    return ((angle % 360) + 360) % 360;
 }
 
 // مقدارهای ناقص یا خالی را با مقدار پیشفرض کامل میکند.
@@ -35,7 +42,8 @@ export function normalizeImageViewerState(state?: PartialImageViewerState | null
             normalizeNumber(state?.pageNumber, defaultImageViewerState.pageNumber),
             1,
             safeMaxPageNumber
-        )
+        ),
+        rotateAngle: normalizeRotateAngle(state?.rotateAngle)
     };
 }
 
@@ -46,6 +54,8 @@ export function useImageViewerState({
     getPageNumber,
     setPageNumber,
     getMaxPageNumber,
+    getRotateAngle,
+    setRotateAngle,
     emit
 }: UseImageViewerStateOptions) {
     const getCurrentViewerState = (): ImageViewerState => {
@@ -55,7 +65,8 @@ export function useImageViewerState({
             zoom: getZoom(),
             scrollTop: container?.scrollTop ?? defaultImageViewerState.scrollTop,
             scrollLeft: container?.scrollLeft ?? defaultImageViewerState.scrollLeft,
-            pageNumber: getPageNumber()
+            pageNumber: getPageNumber(),
+            rotateAngle: getRotateAngle()
         }, getMaxPageNumber());
     };
 
@@ -69,6 +80,7 @@ export function useImageViewerState({
         const nextState = normalizeImageViewerState(state, getMaxPageNumber());
         setZoom(nextState.zoom);
         setPageNumber(nextState.pageNumber);
+        setRotateAngle(nextState.rotateAngle);
 
         // صبر میکنیم تا DOM با zoom و pageNumber جدید render شود،
         // وگرنه scrollLeft به پوزیشنی اسکرول نمیشود که هنوز وجود ندارد.

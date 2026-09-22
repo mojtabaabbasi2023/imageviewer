@@ -109,7 +109,7 @@ export default defineComponent({
         const initialState = normalizeImageViewerState(props.state);
         const pageNumber = ref(initialState.pageNumber);
         const { zoomLevel, zoomIn, zoomOut, resetZoom } = useZoom(initialState.zoom);
-        const { rotateAngle, isRotatedSideways, rotateClockwise } = useRotate();
+        const { rotateAngle, isRotatedSideways, rotateClockwise } = useRotate(initialState.rotateAngle);
         const { isDragging, startDrag, stopDrag, onMove } = useDragScroll(imagegallery);
         const isHover = ref(false);
         useKeyboardScroll({ containerRef: imagegallery, enabled: isHover });
@@ -125,6 +125,10 @@ export default defineComponent({
                 pageNumber.value = value;
             },
             getMaxPageNumber: () => props.dataItems.length,
+            getRotateAngle: () => rotateAngle.value,
+            setRotateAngle: (value) => {
+                rotateAngle.value = value;
+            },
             emit
         });
 
