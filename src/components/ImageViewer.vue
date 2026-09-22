@@ -24,6 +24,14 @@
                     <path d="M96 224v64h320v-64H96z"></path>
                 </svg>
             </button>
+            <button class="btn p-0" @click="rotateAllImages">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    class="svg-icon">
+                    <path
+                        d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24s-24 10.7-24 24v61.1C406.1 81.9 342.4 48 272 48 149.2 48 48 149.2 48 272s101.2 224 224 224c54.5 0 104.5-19.6 143.3-52.2 10.2-8.5 11.5-23.7 3-33.8s-23.7-11.5-33.8-3C354 432.6 314.8 448 272 448c-96.6 0-176-79.4-176-176S175.4 96 272 96c56.8 0 108.7 27.3 141 72h-69c-13.3 0-24 10.7-24 24s10.7 24 24 24h119.5z">
+                    </path>
+                </svg>
+            </button>
             {{ images.length }} /
 
             <input type="number" v-model="pageNumber" @keyup.enter="goToPage" class="no-spinner page-number"
@@ -35,7 +43,8 @@
             @wheel="handleWheel" @scroll="handleScroll" @mousedown.left.prevent="startDrag" @mouseleave="stopDragg"
             @mouseup="stopDrag" @mousemove="onMove" dir="ltr" @mouseenter="isHover = true">
             <div class="images" :style="getImageWidth" ref="gallery">
-                <ImageItem v-for="(image, index) in images" :key="index" :image="image" :ref="'image' + index" />
+                <ImageItem v-for="(image, index) in images" :key="index" :image="image" :rotate-angle="rotateAngle"
+                    :ref="'image' + index" />
             </div>
         </div>
     </div>
@@ -46,6 +55,7 @@
 import { useDragScroll } from '../composables/useDragScroll';
 import { useKeyboardScroll } from '../composables/useKeyboardScroll';
 import { normalizeImageViewerState, useImageViewerState } from '../composables/useImageViewerState';
+import { useRotate } from '../composables/useRotate';
 import { useZoom } from '../composables/useZoom';
 import { useZoomPoint } from '../composables/useZoomPoint';
 import type { PartialImageViewerState } from '../types/imageViewerState';
@@ -71,7 +81,6 @@ export default defineComponent({
     emits: ['update:state'],
     data(): {
         images: Array<{ path: string; width: number; height: number; loaded: boolean; calculateHeight: number }>,
-        rotateAngle: number,
         visibleImages: Array<any>,
         pageSize: number,
         observer: IntersectionObserver | null,
@@ -84,7 +93,6 @@ export default defineComponent({
     } {
         return {
             images: this.dataItems.map((src) => ({ ...src, loaded: false, calculateHeight: this.calculateHeight(src.width, src.height) })),
-            rotateAngle: 0,
             visibleImages: [],
             pageSize: 1,
             observer: null,
@@ -101,6 +109,7 @@ export default defineComponent({
         const initialState = normalizeImageViewerState(props.state);
         const pageNumber = ref(initialState.pageNumber);
         const { zoomLevel, zoomIn, zoomOut, resetZoom } = useZoom(initialState.zoom);
+        const { rotateAngle, isRotatedSideways, rotateClockwise } = useRotate();
         const { isDragging, startDrag, stopDrag, onMove } = useDragScroll(imagegallery);
         const isHover = ref(false);
         useKeyboardScroll({ containerRef: imagegallery, enabled: isHover });
@@ -129,6 +138,9 @@ export default defineComponent({
             zoomIn,
             zoomOut,
             resetZoom,
+            rotateAngle,
+            isRotatedSideways,
+            rotateClockwise,
             isDragging,
             startDrag,
             stopDrag,
@@ -178,13 +190,24 @@ export default defineComponent({
             const container = this.$refs.gallery as HTMLElement;
             if (container) {
                 const containerWidth = container.offsetWidth - 20;
-                const ratio = height / width;
-                return containerWidth * ratio;
+                if (this.isRotatedSideways) {
+                    return containerWidth;
+                }
+                return containerWidth * (height / width);
             }
             return 0;
         },
-        rotateAllImages(): void {
-            this.rotateAngle = (this.rotateAngle + 90) % 360;
+        async rotateAllImages(): Promise<void> {
+            const currentPage = this.pageNumber;
+
+            this.rotateClockwise();
+            await nextTick();
+            this.setCalculateHeight();
+            await nextTick();
+
+            this.pageNumber = currentPage;
+            this.goToPage();
+            this.emitViewerState();
         },
         setCalculateHeight(): void {
             this.images = this.images.map(src => ({

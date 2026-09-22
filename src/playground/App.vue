@@ -86,11 +86,16 @@ const changeVolume = (): void => {
 }
 
 .playground-viewer-column-1 {
+  flex: 0 0 40%;
   width: 40%;
+  min-width: 0;
 }
 
 .playground-viewer-column-2 {
+  flex: 0 0 60%;
   width: 60%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .playground-info-column {

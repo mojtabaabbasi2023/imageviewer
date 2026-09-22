@@ -50,6 +50,7 @@
 
     /* Firefox */
     input[type="number"] {
+      appearance: textfield;
       -moz-appearance: textfield;
     }
 
@@ -100,28 +101,40 @@
 
   .images {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
     margin: 0 auto;
     text-align: center;
     min-height: 105%;
   }
 
   .image-container {
-    margin: 5px 10px;
-    width: 100%;
+    flex: none;
+    margin: 5px auto;
 
     // min-height: 750px;
     .loading-container {
+      width: 100%;
       background-color: #c2c2c2;
       height: 100%;
       color: black;
     }
   }
 
-  .image-container img {
+  .image-rotate-box {
     width: 100%;
-    object-fit: contain;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-container img {
+    object-fit: contain;
     background: white;
+    max-width: none;
+    max-height: none;
+    transform-origin: center center;
+    // transition: transform 0.15s ease;
   }
 }
